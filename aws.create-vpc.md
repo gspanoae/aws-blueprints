@@ -4,7 +4,7 @@
 1. [Define a VPC](#VPC)
 1. [Create subnets](#Subnet)
 
-##VPC <a name="VPC"></a>
+## VPC <a name="VPC"></a>
 
 Create an AWS VPC
 ```
@@ -25,7 +25,7 @@ $(aws ec2 describe-vpcs --filters Name=cidr,Values=10.1.0.0/16 --query 'Vpcs[].V
 Key=Name,Value=systemVpc
 ```
 
-##Subnet <a name="Subnet"></a>
+## Subnet <a name="Subnet"></a>
  
 Create 4 subnets (2 public and 2 private in two different AZs) and tag them
 
