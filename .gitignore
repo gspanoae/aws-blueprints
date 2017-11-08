@@ -1,0 +1,12 @@
+# keys and users
+*.pem
+macOS_IAM.csv
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
