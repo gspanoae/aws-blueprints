@@ -1,10 +1,11 @@
 
 
-# Table if Contents
+# Table of Contents
 1. [Define a VPC](#VPC)
 1. [Create subnets](#Subnet)
 
-## VPC <a name="VPC"></a>
+<a name="VPC"></a>
+## VPC
 
 Create an AWS VPC
 ```
@@ -13,7 +14,7 @@ aws ec2 create-vpc \
 --instance-tenancy default
 ```
 
-To find the new vpc ID by cidr you can use:
+To find the new VPC ID by CIDR you can use:
 ```ec2 describe-vpcs --filters Name=cidr,Values=10.1.0.0/16 --query 'Vpcs[].VpcId' --output text```
 
 Add a tag to the new AWS VPC
@@ -25,9 +26,10 @@ $(aws ec2 describe-vpcs --filters Name=cidr,Values=10.1.0.0/16 --query 'Vpcs[].V
 Key=Name,Value=systemVpc
 ```
 
-## Subnet <a name="Subnet"></a>
+<a name="Subnet"></a>
+## Subnet
  
-Create 4 subnets (2 public and 2 private in two different AZs) and tag them
+Create 4 subnets (2 public and 2 private in two different AZs) and tag these:
 
 ```
 aws ec2 create-subnet \
