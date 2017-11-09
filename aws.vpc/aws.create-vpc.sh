@@ -29,10 +29,10 @@ SUBNET_PRIVATE_2a_ID=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=$VP
 SUBNET_PUBLIC_2b_ID=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID Name=cidr,Values=$SUBNET_PUBLIC_2b_CIDR --query 'Subnets[].SubnetId' --output text)
 SUBNET_PRIVATE_2b_ID=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID Name=cidr,Values=$SUBNET_PRIVATE_2b_CIDR --query 'Subnets[].SubnetId' --output text)
 
-ROUTE_TABLE_PUBLIC_ID=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$ROUTE_TABLE_PUBLIC_TAG_NAME --query 'RouteTables[].RouteTableId' --output text)
+# you can't remove the Main=true VPC route table
+# ROUTE_TABLE_PUBLIC_ID=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$ROUTE_TABLE_PUBLIC_TAG_NAME --query 'RouteTables[].RouteTableId' --output text)
+# ROUTE_TABLE_PUBLIC_MAIN_RTA_ID=$(aws ec2 describe-route-tables --filter Name=vpc-id,Values=$VPC_ID --query "RouteTables[].Associations[?Main=='true'].RouteTableAssociationId" --output text)
 ROUTE_TABLE_PRIVATE_ID=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$ROUTE_TABLE_PRIVATE_TAG_NAME --query 'RouteTables[].RouteTableId' --output text)
-
-ROUTE_TABLE_PUBLIC_MAIN_RTA_ID=$(aws ec2 describe-route-tables --filter Name=vpc-id,Values=$VPC_ID --query "RouteTables[].Associations[?Main=='true'].RouteTableAssociationId" --output text)
 
 SUBNET_PUBLIC_2a_RTA_ID=$(aws ec2 describe-route-tables --filter Name=association.subnet-id,Values=$SUBNET_PUBLIC_2a_ID --query "RouteTables[].Associations[?SubnetId=='$SUBNET_PUBLIC_2a_ID'].RouteTableAssociationId" --output text)
 SUBNET_PRIVATE_2a_RTA_ID=$(aws ec2 describe-route-tables --filter Name=association.subnet-id,Values=$SUBNET_PRIVATE_2a_ID --query "RouteTables[].Associations[?SubnetId=='$SUBNET_PRIVATE_2a_ID'].RouteTableAssociationId" --output text)
@@ -62,17 +62,6 @@ if [ -n "${SUBNET_PRIVATE_2b_RTA_ID}" ]; then
     echo ">>> Resource removed : ${SUBNET_PRIVATE_2b_RTA_ID}"
 fi
 
-if [ -n "${ROUTE_TABLE_PUBLIC_MAIN_RTA_ID}" ]; then
-    echo ">>> Existing ROUTE_TABLE_PUBLIC_MAIN_RTA detected"
-    aws ec2 disassociate-route-table --association-id $ROUTE_TABLE_PUBLIC_MAIN_RTA_ID
-    echo ">>> Resource removed : ${ROUTE_TABLE_PUBLIC_MAIN_RTA_ID}"
-fi
-
-if [ -n "${ROUTE_TABLE_PUBLIC_ID}" ] && [ "$ROUTE_TABLE_PUBLIC_ID" != "None" ]; then
-    echo ">>> Existing ROUTE_TABLE_PUBLIC detected"
-    aws ec2 delete-route-table --route-table-id $ROUTE_TABLE_PUBLIC_ID
-    echo ">>> Resource removed : ${ROUTE_TABLE_PUBLIC_ID}"
-fi
 if [ -n "${ROUTE_TABLE_PRIVATE_ID}" ] && [ "$ROUTE_TABLE_PRIVATE_ID" != "None" ]; then
     echo ">>> Existing ROUTE_TABLE_PRIVATE detected"
     aws ec2 delete-route-table --route-table-id $ROUTE_TABLE_PRIVATE_ID
