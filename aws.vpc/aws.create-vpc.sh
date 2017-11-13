@@ -20,6 +20,9 @@ SUBNET_PRIVATE_2b_TAG_NAME=sys-vpc-net-private2b
 ROUTE_TABLE_PUBLIC_TAG_NAME=sys-rtb-public
 ROUTE_TABLE_PRIVATE_TAG_NAME=sys-rtb-private
 # ###########################################################
+# Set Internet Gateway
+IGW_TAG_NAME=sys-igw
+# ###########################################################
 
 # -----------------------------------------------------------
 # Get existing resources IDs
@@ -39,8 +42,16 @@ SUBNET_PRIVATE_2a_RTA_ID=$(aws ec2 describe-route-tables --filter Name=associati
 SUBNET_PUBLIC_2b_RTA_ID=$(aws ec2 describe-route-tables --filter Name=association.subnet-id,Values=$SUBNET_PUBLIC_2b_ID --query "RouteTables[].Associations[?SubnetId=='$SUBNET_PUBLIC_2b_ID'].RouteTableAssociationId" --output text)
 SUBNET_PRIVATE_2b_RTA_ID=$(aws ec2 describe-route-tables --filter Name=association.subnet-id,Values=$SUBNET_PRIVATE_2b_ID --query "RouteTables[].Associations[?SubnetId=='$SUBNET_PRIVATE_2b_ID'].RouteTableAssociationId" --output text)
 
+IGW_ID=$(aws ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Values=$VPC_ID --query 'InternetGateways[].InternetGatewayId' --output text)
+
 # -----------------------------------------------------------
 # Remove existing resources if exists
+if [ -n "${IGW_ID}" ]; then
+    echo ">>> Existing IGW detected"
+    aws ec2 detach-internet-gateway --internet-gateway-id $IGW_ID --vpc-id $VPC_ID
+    echo ">>> Resource removed : ${IGW_ID}"
+fi
+
 if [ -n "${SUBNET_PUBLIC_2a_RTA_ID}" ]; then
     echo ">>> Existing SUBNET_PUBLIC_2a_RTA detected"
     aws ec2 disassociate-route-table --association-id $SUBNET_PUBLIC_2a_RTA_ID
@@ -178,3 +189,19 @@ SUBNET_PRIVATE_2a_RTA_ID=$(aws ec2 associate-route-table --route-table-id $ROUTE
 echo ">>> Resource created (route table association for ${SUBNET_PRIVATE_2a_TAG_NAME}) : ${SUBNET_PRIVATE_2a_RTA_ID}"
 SUBNET_PRIVATE_2b_RTA_ID=$(aws ec2 associate-route-table --route-table-id $ROUTE_TABLE_PRIVATE_ID --subnet-id $SUBNET_PRIVATE_2b_ID --query 'AssociationId' --output text)
 echo ">>> Resource created (route table association for ${SUBNET_PRIVATE_2b_TAG_NAME}) : ${SUBNET_PRIVATE_2b_RTA_ID}"
+
+# -----------------------------------------------------------
+# Define internet gateways
+
+echo ">>> Create new internet gateway"
+
+## Create new internet gateway
+IGW_ID=$(aws ec2 create-internet-gateway --query 'InternetGateway.InternetGatewayId' --output text)
+## Tag the internet gateway
+aws ec2 create-tags --resources $IGW_ID --tags Key=Name,Value=$IGW_TAG_NAME
+## Attach the Internet gateway to the VPC
+aws ec2 attach-internet-gateway --internet-gateway-id $IGW_ID --vpc-id $VPC_ID
+## Map the Internet gateway to the public route table
+IGW_RT_STATUS=$(aws ec2 create-route --route-table-id $ROUTE_TABLE_PUBLIC_ID --destination-cidr-block 0.0.0.0/0 --gateway-id $IGW_ID)
+echo ">>> Resource created (${IGW_TAG_NAME}) : ${IGW_ID}"
+
