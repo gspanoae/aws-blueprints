@@ -3,6 +3,7 @@
 macOS_IAM.csv
 passwords.txt
 *.rdp
+ec2-user@**.*
 
 # IDEs and editors
 /.idea
@@ -15,3 +16,4 @@ passwords.txt
 
 # Tests
 **/test.sh
+testcommands.txt

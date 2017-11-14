@@ -121,4 +121,14 @@ aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP_DEFAULT_ID --
 # Set default security group RDP inbound rule (Note: all IPs are allowed)
 aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP_DEFAULT_ID --protocol tcp --port 3389 --cidr 0.0.0.0/0
 
+# -----------------------------------------------------------
+# Define NAT gateway and Elastic IPs
+
+NATGATEWAY_2a_EIPALLOC_ID=$(aws ec2 allocate-address --domain vpc --query 'AllocationId' --output text)
+NATGATEWAY_2a_ID=$(aws ec2 create-nat-gateway --subnet-id $SUBNET_PUBLIC_2a_ID --allocation-id $NATGATEWAY_2a_EIPALLOC_ID --query 'NatGateway.NatGatewayId' --output text)
+## Map the nat gateway to the private route table
+NGW_RT_STATUS=$(aws ec2 create-route --route-table-id $ROUTE_TABLE_PRIVATE_ID --destination-cidr-block 0.0.0.0/0 --nat-gateway-id $NATGATEWAY_2a_ID)
+
+# NATGATEWAY_2b_EIPALLOC_ID=$(aws ec2 allocate-address --domain vpc --query 'AllocationId' --output text)
+# NATGATEWAY_2b_ID=$(aws ec2 create-nat-gateway --subnet-id $SUBNET_PUBLIC_2b_ID --allocation-id $NATGATEWAY_2b_EIPALLOC_ID --query 'NatGateway.NatGatewayId' --output text)
 

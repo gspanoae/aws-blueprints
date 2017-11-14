@@ -47,3 +47,6 @@ IGW_ID=$(aws ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Val
 SECURITYGROUP_DEFAULT_ID=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default --query 'SecurityGroups[].GroupId' --output text)
 
 EC2_INSTANCES_ID_LIST=$(aws ec2 describe-instances --filters Name=vpc-id,Values=$VPC_ID --query 'Reservations[].Instances[].InstanceId' --output text)
+
+NAT_GATEWAYS_ID_LIST=$(aws ec2 describe-nat-gateways --filter Name=vpc-id,Values=vpc-6ea48307 Name=state,Values=available --query 'NatGateways[].NatGatewayId' --output text)
+EIP_ID_LIST=$(aws ec2 describe-addresses --filter Name=domain,Values=vpc --query 'Addresses[].AllocationId' --output text)

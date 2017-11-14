@@ -8,6 +8,15 @@ source aws.setup/aws.config.sh
 
 source aws.ec2/aws.remove-ec2.sh
 
+# TODO: fix delete commands ; can t pass more than 1 id to delete-nat-gateway ??
+# if [ -n "${NAT_GATEWAYS_ID_LIST}" ]; then
+#     echo ">>> Existing NAT Gateway detected"
+#     aws ec2 delete-nat-gateway --nat-gateway-id $NAT_GATEWAYS_ID_LIST
+#     sleep 60
+#     aws ec2 release-address --allocation-id $EIP_ID_LIST
+#     echo ">>> Resource removed : ${NAT_GATEWAYS_ID_LIST}"
+# fi
+
 if [ -n "${IGW_ID}" ]; then
     echo ">>> Existing IGW detected"
     aws ec2 delete-route --route-table-id $ROUTE_TABLE_PUBLIC_ID --destination-cidr-block 0.0.0.0/0
