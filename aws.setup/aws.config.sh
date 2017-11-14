@@ -34,7 +34,7 @@ SUBNET_PRIVATE_2b_ID=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=$VP
 
 # you can't remove the Main=true VPC route table
 # ROUTE_TABLE_PUBLIC_MAIN_RTA_ID=$(aws ec2 describe-route-tables --filter Name=vpc-id,Values=$VPC_ID --query "RouteTables[].Associations[?Main=='true'].RouteTableAssociationId" --output text)
-# ROUTE_TABLE_PUBLIC_ID=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$ROUTE_TABLE_PUBLIC_TAG_NAME --query 'RouteTables[].RouteTableId' --output text)
+ROUTE_TABLE_PUBLIC_ID=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$ROUTE_TABLE_PUBLIC_TAG_NAME --query 'RouteTables[].RouteTableId' --output text)
 ROUTE_TABLE_PRIVATE_ID=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$ROUTE_TABLE_PRIVATE_TAG_NAME --query 'RouteTables[].RouteTableId' --output text)
 
 SUBNET_PUBLIC_2a_RTA_ID=$(aws ec2 describe-route-tables --filter Name=association.subnet-id,Values=$SUBNET_PUBLIC_2a_ID --query "RouteTables[].Associations[?SubnetId=='$SUBNET_PUBLIC_2a_ID'].RouteTableAssociationId" --output text)

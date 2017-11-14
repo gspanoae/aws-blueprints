@@ -10,7 +10,9 @@ source aws.ec2/aws.remove-ec2.sh
 
 if [ -n "${IGW_ID}" ]; then
     echo ">>> Existing IGW detected"
+    aws ec2 delete-route --route-table-id $ROUTE_TABLE_PUBLIC_ID --destination-cidr-block 0.0.0.0/0
     aws ec2 detach-internet-gateway --internet-gateway-id $IGW_ID --vpc-id $VPC_ID
+    aws ec2 delete-internet-gateway --internet-gateway-id $IGW_ID
     echo ">>> Resource removed : ${IGW_ID}"
 fi
 
