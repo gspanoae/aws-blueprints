@@ -1,6 +1,8 @@
 # keys and users
 *.pem
 macOS_IAM.csv
+passwords.txt
+*.rdp
 
 # IDEs and editors
 /.idea
