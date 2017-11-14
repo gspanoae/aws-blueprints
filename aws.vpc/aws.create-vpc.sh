@@ -118,5 +118,7 @@ SECURITYGROUP_DEFAULT_ID=$(aws ec2 describe-security-groups --filters Name=vpc-i
 echo ">>> Set default security group SSH inbound rule (security-group: ${SECURITYGROUP_DEFAULT_ID} )"
 # Set default security group SSH inbound rule (Note: all IPs are allowed)
 aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP_DEFAULT_ID --protocol tcp --port 22 --cidr 0.0.0.0/0
+# Set default security group RDP inbound rule (Note: all IPs are allowed)
+aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP_DEFAULT_ID --protocol tcp --port 3389 --cidr 0.0.0.0/0
 
 
