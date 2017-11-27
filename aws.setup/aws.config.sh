@@ -23,6 +23,10 @@ ROUTE_TABLE_PRIVATE_TAG_NAME=sys-rtb-private
 # Set Internet Gateway
 IGW_TAG_NAME=sys-igw
 # ###########################################################
+# Set Security Groups
+SG_PUBLIC_TAG_NAME=sys-sg-public
+SG_PRIVATE_TAG_NAME=sys-sg-private
+# ###########################################################
 # Set
 AMI_AMAZON_LINUX_ID=ami-e3051987
 AMI_WINDOWS_2016_ID=ami-06bcae62
@@ -48,7 +52,8 @@ SUBNET_PRIVATE_2b_RTA_ID=$(aws ec2 describe-route-tables --filter Name=associati
 
 IGW_ID=$(aws ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Values=$VPC_ID --query 'InternetGateways[].InternetGatewayId' --output text)
 
-SECURITYGROUP_DEFAULT_ID=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default --query 'SecurityGroups[].GroupId' --output text)
+SG_PUBLIC_ID=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default --query 'SecurityGroups[].GroupId' --output text)
+SG_PRIVATE_ID=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=private --query 'SecurityGroups[].GroupId' --output text)
 
 EC2_INSTANCES_ID_LIST=$(aws ec2 describe-instances --filters Name=vpc-id,Values=$VPC_ID --query 'Reservations[].Instances[].InstanceId' --output text)
 

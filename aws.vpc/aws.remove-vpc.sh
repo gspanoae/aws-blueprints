@@ -17,6 +17,12 @@ source aws.ec2/aws.remove-ec2.sh
 #     echo ">>> Resource removed : ${NAT_GATEWAYS_ID_LIST}"
 # fi
 
+if [ -n "${SG_PRIVATE_ID}" ]; then
+    echo ">>> Existing private security group detected"
+    aws ec2 delete-security-group --group-id $SG_PRIVATE_ID
+    echo ">>> Resource removed : ${SG_PRIVATE_ID}"
+fi
+
 if [ -n "${IGW_ID}" ]; then
     echo ">>> Existing IGW detected"
     aws ec2 delete-route --route-table-id $ROUTE_TABLE_PUBLIC_ID --destination-cidr-block 0.0.0.0/0

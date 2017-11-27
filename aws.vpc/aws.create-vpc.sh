@@ -111,15 +111,30 @@ echo ">>> Resource created (${IGW_TAG_NAME}) : ${IGW_ID}"
 # -----------------------------------------------------------
 # Define security groups
 
-echo ">>> Find VPC default security group"
-# Get VPC default security group
-SECURITYGROUP_DEFAULT_ID=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default --query 'SecurityGroups[].GroupId' --output text)
+## Get VPC default security group
+SG_PUBLIC_ID=$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default --query 'SecurityGroups[].GroupId' --output text)
+## Tag the default security group
+aws ec2 create-tags --resources $SG_PUBLIC_ID --tags Key=Name,Value=$SG_PUBLIC_TAG_NAME
+echo ">>> Find VPC default security group (${SG_PUBLIC_TAG_NAME}) : ${SG_PUBLIC_ID}"
 
-echo ">>> Set default security group SSH inbound rule (security-group: ${SECURITYGROUP_DEFAULT_ID} )"
-# Set default security group SSH inbound rule (Note: all IPs are allowed)
-aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP_DEFAULT_ID --protocol tcp --port 22 --cidr 0.0.0.0/0
-# Set default security group RDP inbound rule (Note: all IPs are allowed)
-aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP_DEFAULT_ID --protocol tcp --port 3389 --cidr 0.0.0.0/0
+echo ">>> Set default security group SSH and RDP inbound rules (security-group: ${SG_PUBLIC_ID} )"
+## Set default security group SSH inbound rule (Note: all IPs are allowed)
+aws ec2 authorize-security-group-ingress --group-id $SG_PUBLIC_ID --protocol tcp --port 22 --cidr 0.0.0.0/0
+## Set default security group RDP inbound rule (Note: all IPs are allowed)
+aws ec2 authorize-security-group-ingress --group-id $SG_PUBLIC_ID --protocol tcp --port 3389 --cidr 0.0.0.0/0
+
+echo ">>> Create new private VPC security group"
+## Create private VPC security group
+SG_PRIVATE_ID=$(aws ec2 create-security-group --group-name private --description 'default private VPC security group' --vpc-id $VPC_ID --query 'GroupId' --output text)
+## Tag the private security group
+aws ec2 create-tags --resources $SG_PRIVATE_ID --tags Key=Name,Value=$SG_PRIVATE_TAG_NAME
+echo ">>> Resource created (${SG_PRIVATE_TAG_NAME}) : ${SG_PRIVATE_ID}"
+
+echo ">>> Set private security group SSH and RDP inbound rules (security-group: ${SG_PRIVATE_ID} )"
+## Set private security group SSH inbound rule (Note: all IPs are allowed)
+aws ec2 authorize-security-group-ingress --group-id $SG_PRIVATE_ID --protocol tcp --port 22 --cidr 0.0.0.0/0
+## Set private security group RDP inbound rule (Note: all IPs are allowed)
+aws ec2 authorize-security-group-ingress --group-id $SG_PRIVATE_ID --protocol tcp --port 3389 --cidr 0.0.0.0/0
 
 # -----------------------------------------------------------
 # Define NAT gateway and Elastic IPs

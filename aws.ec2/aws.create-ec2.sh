@@ -21,7 +21,7 @@ aws ec2 run-instances \
 --enable-api-termination \
 --no-ebs-optimized \
 --key-name devbox \
---security-group-ids $SECURITYGROUP_DEFAULT_ID \
+--security-group-ids $SG_PUBLIC_ID \
 --associate-public-ip-address \
 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=aws-linux-public-2a}]'
 
@@ -35,7 +35,7 @@ aws ec2 run-instances \
 --enable-api-termination \
 --no-ebs-optimized \
 --key-name devbox \
---security-group-ids $SECURITYGROUP_DEFAULT_ID \
+--security-group-ids $SG_PUBLIC_ID \
 --associate-public-ip-address \
 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=aws-linux-public-2b}]'
 
@@ -49,7 +49,7 @@ aws ec2 run-instances \
 # --enable-api-termination \
 # --no-ebs-optimized \
 # --key-name devbox \
-# --security-group-ids $SECURITYGROUP_DEFAULT_ID \
+# --security-group-ids $SG_PUBLIC_ID \
 # --associate-public-ip-address \
 # --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=win-2016-public-2a}]'
 
@@ -63,7 +63,7 @@ aws ec2 run-instances \
 --enable-api-termination \
 --no-ebs-optimized \
 --key-name devbox \
---security-group-ids $SECURITYGROUP_DEFAULT_ID \
+--security-group-ids $SG_PRIVATE_ID \
 --no-associate-public-ip-address \
 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=aws-linux-private-2a}]'
 
@@ -77,7 +77,7 @@ aws ec2 run-instances \
 --enable-api-termination \
 --no-ebs-optimized \
 --key-name devbox \
---security-group-ids $SECURITYGROUP_DEFAULT_ID \
+--security-group-ids $SG_PRIVATE_ID \
 --no-associate-public-ip-address \
 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=aws-linux-private-2b}]'
 
@@ -91,7 +91,7 @@ aws ec2 run-instances \
 # --enable-api-termination \
 # --no-ebs-optimized \
 # --key-name devbox \
-# --security-group-ids $SECURITYGROUP_DEFAULT_ID \
+# --security-group-ids $SG_PRIVATE_ID \
 # --no-associate-public-ip-address \
 # --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=win-2016-private-2a}]'
 
