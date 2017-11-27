@@ -23,6 +23,10 @@ ROUTE_TABLE_PRIVATE_TAG_NAME=sys-rtb-private
 # Set Internet Gateway
 IGW_TAG_NAME=sys-igw
 # ###########################################################
+# Set
+AMI_AMAZON_LINUX_ID=ami-e3051987
+AMI_WINDOWS_2016_ID=ami-06bcae62
+# ###########################################################
 
 # -----------------------------------------------------------
 # Get existing resources IDs
